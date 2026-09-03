@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.31.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1788473874896-1" author="Anokhin.A.Ig">
+        <createTable tableName="department">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_department"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1788473874896-2" author="Anokhin.A.Ig">
+        <createTable tableName="employee">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_employee"/>
+            </column>
+            <column name="full_name" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="employee_id" type="VARCHAR(255)"/>
+            <column name="date_of_employment" type="DATE"/>
+            <column name="dismissal_date" type="DATE"/>
+            <column name="department_id" type="BIGINT"/>
+            <column name="position" type="VARCHAR(255)"/>
+            <column name="specialty" type="VARCHAR(255)"/>
+            <column name="qualification_level" type="VARCHAR(255)"/>
+            <column name="safety_training_date" type="DATE"/>
+            <column name="access_level" type="VARCHAR(255)"/>
+            <column name="is_active" type="BOOLEAN"/>
+            <column name="status" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1788473874896-3" author="Anokhin.A.Ig">
+        <createTable tableName="measurement">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_measurement"/>
+            </column>
+            <column name="inventory_number" type="VARCHAR(255)"/>
+            <column name="factory_number" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="type" type="VARCHAR(255)"/>
+            <column name="manufacture_creator" type="VARCHAR(255)"/>
+            <column name="range" type="VARCHAR(255)"/>
+            <column name="accuracy" type="VARCHAR(255)"/>
+            <column name="unit_of_measurement" type="VARCHAR(255)"/>
+            <column name="resolution" type="VARCHAR(255)"/>
+            <column name="certificate" type="VARCHAR(255)"/>
+            <column name="last_verification_date" type="DATE"/>
+            <column name="next_verification_date" type="DATE"/>
+            <column name="calibration_interval" type="BIGINT"/>
+            <column name="verification_method" type="VARCHAR(255)"/>
+            <column name="metrologist_id" type="BIGINT"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="department_owner_id" type="BIGINT"/>
+            <column name="employee_owner_id" type="BIGINT"/>
+            <column name="date_of_commissioning" type="DATE"/>
+            <column name="note" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1788473874896-4" author="Anokhin.A.Ig">
+        <createTable tableName="sertificate">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_sertificate"/>
+            </column>
+            <column name="employee_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1788473874896-5" author="Anokhin.A.Ig">
+        <addForeignKeyConstraint baseColumnNames="parent_id" baseTableName="department"
+                                 constraintName="FK_DEPARTMENT_ON_PARENT" referencedColumnNames="id"
+                                 referencedTableName="department"/>
+    </changeSet>
+    <changeSet id="1788473874896-6" author="Anokhin.A.Ig">
+        <addForeignKeyConstraint baseColumnNames="department_id" baseTableName="employee"
+                                 constraintName="FK_EMPLOYEE_ON_DEPARTMENT" referencedColumnNames="id"
+                                 referencedTableName="department"/>
+    </changeSet>
+    <changeSet id="1788473874896-7" author="Anokhin.A.Ig">
+        <addForeignKeyConstraint baseColumnNames="department_owner_id" baseTableName="measurement"
+                                 constraintName="FK_MEASUREMENT_ON_DEPARTMENT_OWNER" referencedColumnNames="id"
+                                 referencedTableName="department"/>
+    </changeSet>
+    <changeSet id="1788473874896-8" author="Anokhin.A.Ig">
+        <addForeignKeyConstraint baseColumnNames="employee_owner_id" baseTableName="measurement"
+                                 constraintName="FK_MEASUREMENT_ON_EMPLOYEE_OWNER" referencedColumnNames="id"
+                                 referencedTableName="employee"/>
+    </changeSet>
+    <changeSet id="1788473874896-9" author="Anokhin.A.Ig">
+        <addForeignKeyConstraint baseColumnNames="metrologist_id" baseTableName="measurement"
+                                 constraintName="FK_MEASUREMENT_ON_METROLOGIST" referencedColumnNames="id"
+                                 referencedTableName="employee"/>
+    </changeSet>
+    <changeSet id="1788473874896-10" author="Anokhin.A.Ig">
+        <addForeignKeyConstraint baseColumnNames="employee_id" baseTableName="sertificate"
+                                 constraintName="FK_SERTIFICATE_ON_EMPLOYEE" referencedColumnNames="id"
+                                 referencedTableName="employee"/>
+    </changeSet>
+
+</databaseChangeLog>
