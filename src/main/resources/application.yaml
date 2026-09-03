@@ -1,0 +1,7 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: metrology-app
+    version: 1.0.0-SNAPSHOT
