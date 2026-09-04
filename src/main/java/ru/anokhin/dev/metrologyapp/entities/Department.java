@@ -4,6 +4,7 @@ package ru.anokhin.dev.metrologyapp.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import ru.anokhin.dev.metrologyapp.entities.enums.DepartmentType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +21,12 @@ public class Department {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, unique = true)
     private String name; // наименование (например, "Цех №69", "Участок 1", "Лаборатория метрологии")
 
     @Column(name = "type", nullable = false)
-    private String type; // тип: factory (завод), workshop (цех), area (участок), lab (лаборатория)
+    @Enumerated(EnumType.STRING)
+    private DepartmentType type; // тип: factory (завод), workshop (цех), area (участок), lab (лаборатория)
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")

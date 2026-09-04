@@ -10,13 +10,18 @@ spring:
     url: jdbc:postgresql://localhost:5432/metrology
     username: postgres
     password: postgres
+#  sql:
+#    init:
+#      data-locations: data.sql
+
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create-drop
     show-sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
 
   liquibase:
     enabled: true
