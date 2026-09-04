@@ -23,13 +23,14 @@ public class Employee {
     @Column(name = "full_name")
     private String fullName;    // ФИО
 
+    @Column(unique = true)
     private String email;    // электронная почта
 
-    @Column(name = "employee_id")
+    @Column(name = "employee_id", unique = true)
     private String employeeId;    // табельный номер
 
     @Column(name = "date_of_employment", updatable = false)
-    private LocalDate dateOfEmployment;    // дата приёма на работу
+    private LocalDate dateOfEmployment = LocalDate.now();    // дата приёма на работу
 
     @Column(name = "dismissal_date")
     private LocalDate dismissalDate;    // дата увольнения
