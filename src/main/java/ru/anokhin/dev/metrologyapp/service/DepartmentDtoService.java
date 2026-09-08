@@ -6,6 +6,8 @@ import ru.anokhin.dev.metrologyapp.dto.response.DepartmentResponseDto;
 import ru.anokhin.dev.metrologyapp.entities.Department;
 import ru.anokhin.dev.metrologyapp.mapper.DepartmentMapper;
 
+import java.util.List;
+
 @Service
 public class DepartmentDtoService {
 
@@ -29,5 +31,11 @@ public class DepartmentDtoService {
 
     public DepartmentResponseDto findById(Long id) {
         return departmentMapper.toDto(departmentService.findById(id));
+    }
+
+    public List<DepartmentResponseDto> findAll() {
+        return departmentService.findAll().stream()
+                .map(departmentMapper::toDto).toList();
+
     }
 }

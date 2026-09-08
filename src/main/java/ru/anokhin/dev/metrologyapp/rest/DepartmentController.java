@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.anokhin.dev.metrologyapp.dto.request.DepartmentRequestDto;
 import ru.anokhin.dev.metrologyapp.dto.response.DepartmentResponseDto;
 import ru.anokhin.dev.metrologyapp.service.DepartmentDtoService;
-import ru.anokhin.dev.metrologyapp.service.DepartmentService;
 
 import java.util.List;
 
@@ -15,11 +14,9 @@ import java.util.List;
 @RequestMapping("/api/v1/departments")
 public class DepartmentController {
 
-    private final DepartmentService departmentService;
     private final DepartmentDtoService departmentDtoService;
 
-    public DepartmentController(DepartmentService departmentService, DepartmentDtoService departmentDtoService) {
-        this.departmentService = departmentService;
+    public DepartmentController(DepartmentDtoService departmentDtoService) {
         this.departmentDtoService = departmentDtoService;
     }
 
@@ -31,8 +28,7 @@ public class DepartmentController {
 
     @GetMapping
     public ResponseEntity<List<DepartmentResponseDto>> findAll() {
-        //TODO переделать с departmentService на departmentDtoService
-        List<DepartmentResponseDto> depList = departmentService.findAll();
+        List<DepartmentResponseDto> depList = departmentDtoService.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(depList);
     }
 

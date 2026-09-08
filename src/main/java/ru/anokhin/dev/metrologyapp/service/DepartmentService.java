@@ -1,24 +1,18 @@
 package ru.anokhin.dev.metrologyapp.service;
 
 import org.springframework.stereotype.Service;
-import ru.anokhin.dev.metrologyapp.dto.request.DepartmentRequestDto;
-import ru.anokhin.dev.metrologyapp.dto.response.DepartmentResponseDto;
 import ru.anokhin.dev.metrologyapp.entities.Department;
-import ru.anokhin.dev.metrologyapp.mapper.DepartmentMapper;
 import ru.anokhin.dev.metrologyapp.repository.DepartmentRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
-    private final DepartmentMapper departmentMapper;
 
-    DepartmentService(DepartmentRepository repo, DepartmentMapper departmentMapper) {
+    DepartmentService(DepartmentRepository repo) {
         this.departmentRepository = repo;
-        this.departmentMapper = departmentMapper;
     }
 
     public boolean existDepartment(Long id) {
@@ -34,12 +28,7 @@ public class DepartmentService {
                 .orElseThrow(() -> new IllegalArgumentException("Департамент с id: " + id + " не найден"));
     }
 
-    public List<DepartmentResponseDto> findAll() {
-        List<Department> deps = departmentRepository.findAll();
-        List<DepartmentResponseDto> depsDto = new ArrayList<>();
-        for(Department d : deps) {
-            depsDto.add(departmentMapper.toDto(d));
-        }
-        return depsDto;
+    public List<Department> findAll() {
+        return departmentRepository.findAll();
     }
 }
