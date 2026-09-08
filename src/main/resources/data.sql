@@ -1,1 +1,0 @@
-INSERT INTO department VALUES ('2', 'цех 69', 'ceh');

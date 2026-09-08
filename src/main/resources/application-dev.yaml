@@ -1,6 +1,3 @@
-server:
-  port: 8080
-
 spring:
   application:
     name: metrology-app
@@ -13,11 +10,10 @@ spring:
 
   jpa:
 #    hibernate:
-#      ddl-auto: create-drop
+#        ddl-auto: update
     show-sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-
 
   liquibase:
     enabled: true

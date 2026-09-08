@@ -7,6 +7,9 @@ import ru.anokhin.dev.metrologyapp.entities.Department;
 import ru.anokhin.dev.metrologyapp.mapper.DepartmentMapper;
 import ru.anokhin.dev.metrologyapp.repository.DepartmentRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class DepartmentService {
 
@@ -22,18 +25,21 @@ public class DepartmentService {
         return departmentRepository.existsById(id);
     }
 
+    public Department save(Department department) {
+        return departmentRepository.save(department);
+    }
+
     public Department findById(Long id) {
         return departmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Департамент с id: " + id + " не найден"));
     }
 
-    public DepartmentResponseDto save(DepartmentRequestDto dto) {
-        Department parent = null;
-        if (dto.parentId() != null) {
-            parent = findById(dto.parentId());
+    public List<DepartmentResponseDto> findAll() {
+        List<Department> deps = departmentRepository.findAll();
+        List<DepartmentResponseDto> depsDto = new ArrayList<>();
+        for(Department d : deps) {
+            depsDto.add(departmentMapper.toDto(d));
         }
-
-        Department department = departmentMapper.toEntity(dto, parent);
-        return departmentMapper.toDto(departmentRepository.save(department));
+        return depsDto;
     }
 }
