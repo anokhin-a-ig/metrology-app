@@ -38,4 +38,10 @@ public class DepartmentController {
                 departmentDtoService.findById(id)
         );
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<DepartmentResponseDto> changeById(@PathVariable Long id,
+                                                            @Valid @RequestBody DepartmentRequestDto dto) {
+        return ResponseEntity.status(HttpStatus.OK).body(departmentDtoService.changeById(id, dto));
+    }
 }
