@@ -44,4 +44,10 @@ public class DepartmentController {
                                                             @Valid @RequestBody DepartmentRequestDto dto) {
         return ResponseEntity.status(HttpStatus.OK).body(departmentDtoService.changeById(id, dto));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        departmentDtoService.delete(id);
+        return ResponseEntity.status(HttpStatus.OK).body("123");
+    }
 }

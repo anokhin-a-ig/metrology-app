@@ -40,6 +40,5 @@ public class EmployeeService {
 
         Employee employee = employeeMapper.toEntity(dto, department);
         return employeeMapper.toDto(employeeRepository.save(employee));
-
     }
 }
