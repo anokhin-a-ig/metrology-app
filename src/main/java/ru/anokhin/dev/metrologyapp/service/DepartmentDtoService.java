@@ -3,6 +3,7 @@ package ru.anokhin.dev.metrologyapp.service;
 import jakarta.persistence.EntityExistsException;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.anokhin.dev.metrologyapp.dto.request.DepartmentRequestDto;
 import ru.anokhin.dev.metrologyapp.dto.response.DepartmentResponseDto;
 import ru.anokhin.dev.metrologyapp.entities.Department;
@@ -11,6 +12,7 @@ import ru.anokhin.dev.metrologyapp.mapper.DepartmentMapper;
 import java.util.List;
 
 @Service
+@Transactional
 public class DepartmentDtoService {
 
     private final DepartmentService departmentService;
@@ -31,10 +33,12 @@ public class DepartmentDtoService {
         return departmentMapper.toDto(departmentService.save(department));
     }
 
+    @Transactional(readOnly = true)
     public DepartmentResponseDto findById(Long id) {
         return departmentMapper.toDto(departmentService.findById(id));
     }
 
+    @Transactional(readOnly = true)
     public List<DepartmentResponseDto> findAll() {
         return departmentService.findAll().stream()
                 .map(departmentMapper::toDtoWithoutChildren).toList();
@@ -52,6 +56,19 @@ public class DepartmentDtoService {
             return departmentMapper.toDto(department);
         } else {
             throw new IllegalArgumentException("Департамент с id: " + id + " не найден");
+        }
+    }
+
+    public void delete(Long id) {
+        Department department = departmentService.findById(id);
+        if (department != null) {
+            if(department.getChildren() == null) {
+                departmentService.delete(id);
+            } else {
+                throw new IllegalArgumentException("Удалите или переназначьте сначала зависимые департаменты");
+            }
+        } else {
+            throw new IllegalArgumentException("Департамента с id:" + id + "не существует");
         }
     }
 }

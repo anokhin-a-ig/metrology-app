@@ -1,7 +1,4 @@
 spring:
-  application:
-    name: metrology-app
-    version: 1.0.0-SNAPSHOT
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/metrology
@@ -10,7 +7,7 @@ spring:
 
   jpa:
 #    hibernate:
-#        ddl-auto: update
+#      ddl-auto: update
     show-sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
