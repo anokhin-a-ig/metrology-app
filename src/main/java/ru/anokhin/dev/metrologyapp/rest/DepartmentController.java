@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.anokhin.dev.metrologyapp.dto.request.DepartmentRequestDto;
 import ru.anokhin.dev.metrologyapp.dto.response.DepartmentResponseDto;
-import ru.anokhin.dev.metrologyapp.service.DepartmentDtoService;
+import ru.anokhin.dev.metrologyapp.service.dto.DepartmentDtoService;
 
 import java.util.List;
 

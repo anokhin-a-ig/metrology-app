@@ -1,6 +1,5 @@
-package ru.anokhin.dev.metrologyapp.service;
+package ru.anokhin.dev.metrologyapp.service.dto;
 
-import jakarta.persistence.EntityExistsException;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +7,7 @@ import ru.anokhin.dev.metrologyapp.dto.request.DepartmentRequestDto;
 import ru.anokhin.dev.metrologyapp.dto.response.DepartmentResponseDto;
 import ru.anokhin.dev.metrologyapp.entities.Department;
 import ru.anokhin.dev.metrologyapp.mapper.DepartmentMapper;
+import ru.anokhin.dev.metrologyapp.service.DepartmentService;
 
 import java.util.List;
 
@@ -62,7 +62,7 @@ public class DepartmentDtoService {
     public void delete(Long id) {
         Department department = departmentService.findById(id);
         if (department != null) {
-            if(department.getChildren() == null) {
+            if(department.getChildren().isEmpty()) {
                 departmentService.delete(id);
             } else {
                 throw new IllegalArgumentException("Удалите или переназначьте сначала зависимые департаменты");
