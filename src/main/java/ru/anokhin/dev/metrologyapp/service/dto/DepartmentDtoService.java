@@ -1,5 +1,6 @@
 package ru.anokhin.dev.metrologyapp.service.dto;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
