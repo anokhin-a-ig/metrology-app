@@ -1,39 +1,42 @@
 package ru.anokhin.dev.metrologyapp.service;
 
 import org.springframework.stereotype.Service;
-import ru.anokhin.dev.metrologyapp.dto.request.DepartmentRequestDto;
-import ru.anokhin.dev.metrologyapp.dto.response.DepartmentResponseDto;
+import org.springframework.transaction.annotation.Transactional;
 import ru.anokhin.dev.metrologyapp.entities.Department;
-import ru.anokhin.dev.metrologyapp.mapper.DepartmentMapper;
 import ru.anokhin.dev.metrologyapp.repository.DepartmentRepository;
 
+import java.util.List;
+
 @Service
+@Transactional
 public class DepartmentService {
 
     private final DepartmentRepository departmentRepository;
-    private final DepartmentMapper departmentMapper;
 
-    DepartmentService(DepartmentRepository repo, DepartmentMapper departmentMapper) {
+    DepartmentService(DepartmentRepository repo) {
         this.departmentRepository = repo;
-        this.departmentMapper = departmentMapper;
     }
 
+    @Transactional(readOnly = true)
     public boolean existDepartment(Long id) {
         return departmentRepository.existsById(id);
     }
 
+    public Department save(Department department) {
+        return departmentRepository.save(department);
+    }
+
+    @Transactional(readOnly = true)
     public Department findById(Long id) {
         return departmentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Департамент с id: " + id + " не найден"));
     }
 
-    public DepartmentResponseDto save(DepartmentRequestDto dto) {
-        Department parent = null;
-        if (dto.parentId() != null) {
-            parent = findById(dto.parentId());
-        }
+    public List<Department> findAll() {
+        return departmentRepository.findAll();
+    }
 
-        Department department = departmentMapper.toEntity(dto, parent);
-        return departmentMapper.toDto(departmentRepository.save(department));
+    public void delete(Long id) {
+        departmentRepository.deleteById(id);
     }
 }

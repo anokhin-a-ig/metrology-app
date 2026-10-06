@@ -31,4 +31,14 @@ public class DepartmentMapper {
                         .toList() : List.of()
         );
     }
+
+    public DepartmentResponseDto toDtoWithoutChildren(Department dep) {
+         return new DepartmentResponseDto(
+                 dep.getId(),
+                 dep.getName(),
+                 dep.getType(),
+                 dep.getParent() !=null ? new DepartmentDto(dep.getParent()) : null,
+                 List.of()
+         );
+    }
 }
