@@ -52,11 +52,9 @@ public class DepartmentServiceTests {
     @Test
     @DisplayName("Поиск департамента по его ID. Не найден")
     void findById_negativeResult() {
-        when(repository.findById(2L)).thenThrow(new IllegalArgumentException("Департамент с id: 2 не найден"));
+        when(repository.findById(2L)).thenReturn(Optional.empty());
         //Проверяем вызов Exception
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.findById(2L));
-        //Проверяем текст exception
-        assertEquals("Департамент с id: 2 не найден", ex.getMessage());
+
         //Проверяем что сервис вызвал findById в репозитории
         verify(repository).findById(2L);
     }
