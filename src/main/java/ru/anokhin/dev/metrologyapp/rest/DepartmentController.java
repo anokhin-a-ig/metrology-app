@@ -84,6 +84,21 @@ public class DepartmentController {
     }
 
     @Operation(
+            summary = "Получение департамента по имени",
+            description = "Возвращает департамент по указанному имени"
+    )
+    @ApiResponse(responseCode = "200", description = "Департамент успешно получен")
+    @ApiResponse(responseCode = "404", description = "Департамент не найден")
+    @GetMapping(params = "name")
+    public ResponseEntity<DepartmentResponseDto> findByName(
+            @Parameter(description = "Имя департамента", required = true, example = "Отдел главного метролога")
+            @RequestParam String name) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                departmentDtoService.findByName(name)
+        );
+    }
+
+    @Operation(
             summary = "Обновление департамента",
             description = "Обновляет данные департамента по указанному идентификатору. " +
                     "Принимает название, тип подразделения и (опционально) идентификатор родительского департамента."
