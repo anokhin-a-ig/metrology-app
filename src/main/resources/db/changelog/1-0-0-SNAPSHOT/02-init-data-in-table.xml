@@ -5,6 +5,6 @@
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <changeSet id="1788899902736-1" author="Anokhin.A.Ig">
-        <sqlFile path="sql/data.sql"/>
+        <sqlFile path="sql/departmentInitialization.sql"/>
     </changeSet>
 </databaseChangeLog>
