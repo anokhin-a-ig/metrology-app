@@ -32,11 +32,18 @@ public class DepartmentService {
                 .orElseThrow(() -> new IllegalArgumentException("Департамент с id: " + id + " не найден"));
     }
 
+    @Transactional(readOnly = true)
     public List<Department> findAll() {
         return departmentRepository.findAll();
     }
 
     public void delete(Long id) {
         departmentRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Department findByName(String name) {
+        return departmentRepository.findByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("Департамента с названием " + name + " не найдено"));
     }
 }

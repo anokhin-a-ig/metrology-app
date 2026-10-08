@@ -72,4 +72,9 @@ public class DepartmentDtoService {
             throw new IllegalArgumentException("Департамента с id:" + id + "не существует");
         }
     }
+
+    @Transactional(readOnly = true)
+    public DepartmentResponseDto findByName(String name) {
+        return departmentMapper.toDto(departmentService.findByName(name));
+    }
 }
