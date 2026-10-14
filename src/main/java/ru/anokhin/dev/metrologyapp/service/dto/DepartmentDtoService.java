@@ -1,7 +1,7 @@
 package ru.anokhin.dev.metrologyapp.service.dto;
 
-import jakarta.persistence.EntityExistsException;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.anokhin.dev.metrologyapp.dto.request.DepartmentRequestDto;
@@ -44,6 +44,12 @@ public class DepartmentDtoService {
         return departmentService.findAll().stream()
                 .map(departmentMapper::toDtoWithoutChildren).toList();
 
+    }
+
+    @Transactional(readOnly = true)
+    public List<DepartmentResponseDto> findAllWithPagination(Integer offset, Integer limit) {
+        Page<Department> page = departmentService.findAllWithPagination(offset, limit);
+        return page.stream().map(departmentMapper::toDtoWithoutChildren).toList();
     }
 
     public DepartmentResponseDto changeById(Long id, @Valid DepartmentRequestDto dto) {
