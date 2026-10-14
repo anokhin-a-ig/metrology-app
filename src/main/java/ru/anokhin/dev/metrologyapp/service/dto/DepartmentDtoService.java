@@ -77,4 +77,9 @@ public class DepartmentDtoService {
     public DepartmentResponseDto findByName(String name) {
         return departmentMapper.toDto(departmentService.findByName(name));
     }
+
+    @Transactional(readOnly = true)
+    public List<DepartmentResponseDto> findByType(String type) {
+        return departmentService.findByType(type).stream().map(departmentMapper::toDtoWithoutChildren).toList();
+    }
 }

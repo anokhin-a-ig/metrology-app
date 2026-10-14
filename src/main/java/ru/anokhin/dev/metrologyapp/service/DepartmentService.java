@@ -3,6 +3,7 @@ package ru.anokhin.dev.metrologyapp.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.anokhin.dev.metrologyapp.entities.Department;
+import ru.anokhin.dev.metrologyapp.entities.enums.DepartmentType;
 import ru.anokhin.dev.metrologyapp.repository.DepartmentRepository;
 
 import java.util.List;
@@ -45,5 +46,20 @@ public class DepartmentService {
     public Department findByName(String name) {
         return departmentRepository.findByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("Департамента с названием " + name + " не найдено"));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Department> findByType(String type) {
+        DepartmentType depType;
+        try {
+            depType = DepartmentType.valueOf(type);
+        } catch (IllegalArgumentException exception){
+            throw new IllegalArgumentException("Указанный тип департамента " + type + " не поддерживается");
+        }
+        List<Department> departmentList = departmentRepository.findDepartmentByType(depType).orElse(List.of());
+        if (departmentList.isEmpty()) {
+            throw new IllegalArgumentException("Департаментов с типом " + type + " не найдено");
+        }
+        return departmentList;
     }
 }
