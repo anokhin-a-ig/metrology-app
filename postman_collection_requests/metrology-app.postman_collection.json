@@ -1,0 +1,217 @@
+{
+  "info": {
+    "_postman_id": "7994b897-4cd0-42ed-a71b-768310d48624",
+    "name": "metrology-app",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "37963876",
+    "_collection_link": "https://go.postman.co/collection/37963876-7994b897-4cd0-42ed-a71b-768310d48624?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Получение департамента по ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/departments/6",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "departments",
+            "6"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Получение департамента по имени (name)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/departments?name=Отдел+главного+метролога",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "departments"
+          ],
+          "query": [
+            {
+              "key": "name",
+              "value": "Отдел+главного+метролога"
+            },
+            {
+              "key": "name",
+              "value": "Лаборатория+электрических+измерений",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Получение департамента по типу (type)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/departments?type=WORKSHOP",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "departments"
+          ],
+          "query": [
+            {
+              "key": "type",
+              "value": "FACTORY",
+              "disabled": true
+            },
+            {
+              "key": "type",
+              "value": "WORKSHOP"
+            },
+            {
+              "key": "type",
+              "value": "LABORATORY",
+              "disabled": true
+            },
+            {
+              "key": "type",
+              "value": "123",
+              "disabled": true
+            },
+            {
+              "key": "type",
+              "value": "AREA",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Получение всех департаментов",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/departments",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "departments"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Получение всех департаментов c пагинацией",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/departments?offset=1&limit=5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "departments"
+          ],
+          "query": [
+            {
+              "key": "offset",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "5"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Изменение департамента",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"Отдел метрологии 3\",\r\n    \"type\": \"AREA\",\r\n    \"parentId\": 3\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/departments/4",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "departments",
+            "4"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Удаление департамента по ID",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/api/v1/departments/4",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "departments",
+            "4"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

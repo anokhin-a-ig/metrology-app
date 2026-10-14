@@ -68,6 +68,12 @@ public class DepartmentController {
         return ResponseEntity.status(HttpStatus.OK).body(depList);
     }
 
+    @GetMapping(params = {"offset", "limit"})
+    public ResponseEntity<List<DepartmentResponseDto>> findAllWithPagination(
+            @RequestParam Integer offset, @RequestParam Integer limit) {
+        return ResponseEntity.status(HttpStatus.OK).body(departmentDtoService.findAllWithPagination(offset, limit));
+    }
+
     @Operation(
             summary = "Получение департамента по идентификатору",
             description = "Возвращает департамент по указанному идентификатору"
