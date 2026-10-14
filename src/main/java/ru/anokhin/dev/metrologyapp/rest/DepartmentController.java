@@ -98,6 +98,13 @@ public class DepartmentController {
         );
     }
 
+    @GetMapping(params = "type")
+    public ResponseEntity<List<DepartmentResponseDto>> findByType(@RequestParam String type) {
+        return ResponseEntity.status(HttpStatus.OK).body(
+                departmentDtoService.findByType(type)
+        );
+    }
+
     @Operation(
             summary = "Обновление департамента",
             description = "Обновляет данные департамента по указанному идентификатору. " +

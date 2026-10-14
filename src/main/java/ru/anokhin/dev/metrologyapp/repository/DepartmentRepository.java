@@ -5,7 +5,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.anokhin.dev.metrologyapp.entities.Department;
+import ru.anokhin.dev.metrologyapp.entities.enums.DepartmentType;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,4 +21,6 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
 
 
     boolean existsByName(String name);
+
+    Optional<List<Department>> findDepartmentByType(DepartmentType type);
 }
