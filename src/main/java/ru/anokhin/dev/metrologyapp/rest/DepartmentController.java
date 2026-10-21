@@ -8,11 +8,17 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.anokhin.dev.metrologyapp.dto.request.DepartmentRequestDto;
 import ru.anokhin.dev.metrologyapp.dto.response.DepartmentResponseDto;
+import ru.anokhin.dev.metrologyapp.entities.Department;
+import ru.anokhin.dev.metrologyapp.service.DepartmentService;
 import ru.anokhin.dev.metrologyapp.service.dto.DepartmentDtoService;
 
 import java.util.List;
@@ -23,9 +29,11 @@ import java.util.List;
 public class DepartmentController {
 
     private final DepartmentDtoService departmentDtoService;
+    private final DepartmentService departmentService;
 
-    public DepartmentController(DepartmentDtoService departmentDtoService) {
+    public DepartmentController(DepartmentDtoService departmentDtoService, DepartmentService departmentService) {
         this.departmentDtoService = departmentDtoService;
+        this.departmentService = departmentService;
     }
 
     @Operation(
@@ -68,11 +76,42 @@ public class DepartmentController {
         return ResponseEntity.status(HttpStatus.OK).body(depList);
     }
 
+    @Deprecated
     @GetMapping(params = {"offset", "limit"})
     public ResponseEntity<List<DepartmentResponseDto>> findAllWithPagination(
             @RequestParam Integer offset, @RequestParam Integer limit) {
         return ResponseEntity.status(HttpStatus.OK).body(departmentDtoService.findAllWithPagination(offset, limit));
     }
+
+    @Operation(
+            summary = "Получение списка всех департаментов с постраничным выводом",
+            description = "Возвращает список всех департаментов в системе с постраничным выводом"
+    )
+    @ApiResponse(responseCode = "200", description = "Список департаментов успешно получен")
+    @GetMapping(path = "/all-by-type", params = {"page", "size", "type", "sortBy"})
+    public ResponseEntity<Page<DepartmentResponseDto>> findAllWithPageable(
+            @RequestParam Integer page,
+            @RequestParam Integer size,
+            @RequestParam String type,
+            @RequestParam String sortBy) {
+        return ResponseEntity.ok(departmentDtoService.findAllWithPageable(page, size, type, sortBy));
+    }
+
+    @Operation(
+            summary = "Получение дочерних департаментов с постраничным выводом",
+            description = "Возвращает дочерние департаменты указанного родителя с постраничным выводом"
+    )
+    @ApiResponse(responseCode = "200", description = "Список дочерних департаментов успешно получен")
+    @GetMapping(path = "/by-parent", params = {"parentId", "page", "size", "sortBy"})
+    public ResponseEntity<Page<DepartmentResponseDto>> findByParent(
+            @Parameter(description = "Идентификатор родительского департамента", required = true, example = "1")
+            @RequestParam Long parentId,
+            @RequestParam Integer page,
+            @RequestParam Integer size,
+            @RequestParam String sortBy) {
+        return ResponseEntity.ok(departmentDtoService.findByParent(parentId, page, size, sortBy));
+    }
+
 
     @Operation(
             summary = "Получение департамента по идентификатору",

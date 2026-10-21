@@ -11,6 +11,7 @@ import ru.anokhin.dev.metrologyapp.mapper.DepartmentMapper;
 import ru.anokhin.dev.metrologyapp.service.DepartmentService;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -87,5 +88,22 @@ public class DepartmentDtoService {
     @Transactional(readOnly = true)
     public List<DepartmentResponseDto> findByType(String type) {
         return departmentService.findByType(type).stream().map(departmentMapper::toDtoWithoutChildren).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<DepartmentResponseDto> findAllWithPageable(Integer page, Integer size, String type, String sortBy) {
+        return toDtoPage(departmentService.findAllWithPageable(page, size, type, sortBy));
+    }
+
+    @Transactional(readOnly = true)
+    public Page<DepartmentResponseDto> findByParent(Long parentId, Integer page, Integer size, String sortBy) {
+        return toDtoPage(departmentService.findByParent(parentId, page, size, sortBy));
+    }
+
+    private Page<DepartmentResponseDto> toDtoPage(Page<Department> page) {
+        Set<Long> parentIdsWithChildren = departmentService.findParentIdsWithChildren(
+                page.stream().map(Department::getId).toList());
+        return page.map(department -> departmentMapper.toDtoWithoutChildren(
+                department, parentIdsWithChildren.contains(department.getId())));
     }
 }
