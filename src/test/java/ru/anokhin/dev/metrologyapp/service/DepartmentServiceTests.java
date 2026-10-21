@@ -53,9 +53,8 @@ public class DepartmentServiceTests {
     @DisplayName("Поиск департамента по его ID. Не найден")
     void findById_negativeResult() {
         when(repository.findById(2L)).thenReturn(Optional.empty());
-        //Проверяем вызов Exception
 
-        //Проверяем что сервис вызвал findById в репозитории
+        assertThrows(IllegalArgumentException.class, () -> service.findById(2L));
         verify(repository).findById(2L);
     }
 }

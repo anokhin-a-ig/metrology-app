@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import ru.anokhin.dev.metrologyapp.entities.Department;
 import ru.anokhin.dev.metrologyapp.entities.enums.DepartmentType;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,4 +28,12 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     Optional<List<Department>> findDepartmentByType(DepartmentType type);
 
     Page<Department> findAllByType(DepartmentType type, Pageable pageable);
+
+    Page<Department> findAllByParent_Id(Long parentId, Pageable pageable);
+
+    @Query("""
+    SELECT DISTINCT d.parent.id FROM Department d
+    WHERE d.parent.id IN :parentIds
+""")
+    List<Long> findParentIdsWithChildren(@Param("parentIds") Collection<Long> parentIds);
 }

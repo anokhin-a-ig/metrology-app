@@ -10,7 +10,11 @@ import ru.anokhin.dev.metrologyapp.entities.Department;
 import ru.anokhin.dev.metrologyapp.entities.enums.DepartmentType;
 import ru.anokhin.dev.metrologyapp.repository.DepartmentRepository;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -59,12 +63,7 @@ public class DepartmentService {
 
     @Transactional(readOnly = true)
     public List<Department> findByType(String type) {
-        DepartmentType depType;
-        try {
-            depType = DepartmentType.valueOf(type);
-        } catch (IllegalArgumentException exception){
-            throw new IllegalArgumentException("Указанный тип департамента " + type + " не поддерживается");
-        }
+        DepartmentType depType = parseType(type);
         List<Department> departmentList = departmentRepository.findDepartmentByType(depType).orElse(List.of());
         if (departmentList.isEmpty()) {
             throw new IllegalArgumentException("Департаментов с типом " + type + " не найдено");
@@ -72,9 +71,45 @@ public class DepartmentService {
         return departmentList;
     }
 
+    @Transactional(readOnly = true)
     public Page<Department> findAllWithPageable(Integer page, Integer size, String type, String sortBy) {
-        Sort sort = Sort.by(Sort.Direction.valueOf(sortBy), "name", "id");
-        Pageable pageable = PageRequest.of(page, size, sort);
-        return departmentRepository.findAllByType(DepartmentType.valueOf(type), pageable);
+        Pageable pageable = createPageable(page, size, sortBy);
+        return departmentRepository.findAllByType(parseType(type), pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Department> findByParent(Long parentId, Integer page, Integer size, String sortBy) {
+        Pageable pageable = createPageable(page, size, sortBy);
+        return departmentRepository.findAllByParent_Id(parentId, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Set<Long> findParentIdsWithChildren(Collection<Long> parentIds) {
+        if (parentIds == null || parentIds.isEmpty()) {
+            return Set.of();
+        }
+        return new HashSet<>(departmentRepository.findParentIdsWithChildren(parentIds));
+    }
+
+    private Pageable createPageable(Integer page, Integer size, String sortBy) {
+        return PageRequest.of(page, size, buildSort(sortBy));
+    }
+
+    private Sort buildSort(String sortBy) {
+        String value = sortBy == null ? "ASC" : sortBy.trim().toUpperCase(Locale.ROOT);
+        try {
+            return Sort.by(Sort.Direction.valueOf(value), "name", "id");
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException(
+                    "Направление сортировки " + sortBy + " не поддерживается. Используйте ASC или DESC");
+        }
+    }
+
+    private DepartmentType parseType(String type) {
+        try {
+            return DepartmentType.valueOf(type);
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException("Указанный тип департамента " + type + " не поддерживается");
+        }
     }
 }

@@ -20,25 +20,33 @@ public class DepartmentMapper {
      }
 
     public DepartmentResponseDto toDto (Department dep) {
+        List<DepartmentDto> children = dep.getChildren() != null
+                ? dep.getChildren().stream().map(DepartmentDto::new).toList()
+                : List.of();
+
         return new DepartmentResponseDto(
                 dep.getId(),
                 dep.getName(),
                 dep.getType(),
-                dep.getParent() !=null ? new DepartmentDto(dep.getParent()) : null,
-                dep.getChildren() != null ? dep.getChildren()
-                        .stream()
-                        .map(DepartmentDto::new)
-                        .toList() : List.of()
+                dep.getParent() != null ? new DepartmentDto(dep.getParent()) : null,
+                children,
+                !children.isEmpty()
         );
     }
 
     public DepartmentResponseDto toDtoWithoutChildren(Department dep) {
+        boolean hasChildren = dep.getChildren() != null && !dep.getChildren().isEmpty();
+        return toDtoWithoutChildren(dep, hasChildren);
+    }
+
+    public DepartmentResponseDto toDtoWithoutChildren(Department dep, boolean hasChildren) {
          return new DepartmentResponseDto(
                  dep.getId(),
                  dep.getName(),
                  dep.getType(),
-                 dep.getParent() !=null ? new DepartmentDto(dep.getParent()) : null,
-                 List.of()
+                 dep.getParent() != null ? new DepartmentDto(dep.getParent()) : null,
+                 List.of(),
+                 hasChildren
          );
     }
 }

@@ -10,6 +10,7 @@ public record DepartmentResponseDto (
         String name,
         DepartmentType type,
         DepartmentDto parent,
-        List<DepartmentDto> children
+        List<DepartmentDto> children,
+        boolean hasChildren
 ){
 }

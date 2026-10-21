@@ -97,6 +97,21 @@ public class DepartmentController {
         return ResponseEntity.ok(departmentDtoService.findAllWithPageable(page, size, type, sortBy));
     }
 
+    @Operation(
+            summary = "Получение дочерних департаментов с постраничным выводом",
+            description = "Возвращает дочерние департаменты указанного родителя с постраничным выводом"
+    )
+    @ApiResponse(responseCode = "200", description = "Список дочерних департаментов успешно получен")
+    @GetMapping(path = "/by-parent", params = {"parentId", "page", "size", "sortBy"})
+    public ResponseEntity<Page<DepartmentResponseDto>> findByParent(
+            @Parameter(description = "Идентификатор родительского департамента", required = true, example = "1")
+            @RequestParam Long parentId,
+            @RequestParam Integer page,
+            @RequestParam Integer size,
+            @RequestParam String sortBy) {
+        return ResponseEntity.ok(departmentDtoService.findByParent(parentId, page, size, sortBy));
+    }
+
 
     @Operation(
             summary = "Получение департамента по идентификатору",
