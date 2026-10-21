@@ -88,4 +88,8 @@ public class DepartmentDtoService {
     public List<DepartmentResponseDto> findByType(String type) {
         return departmentService.findByType(type).stream().map(departmentMapper::toDtoWithoutChildren).toList();
     }
+
+    public Page<DepartmentResponseDto> findAllWithPageable(Integer page, Integer size, String type, String sortBy) {
+        return departmentService.findAllWithPageable(page, size, type, sortBy).map(departmentMapper::toDtoWithoutChildren);
+    }
 }

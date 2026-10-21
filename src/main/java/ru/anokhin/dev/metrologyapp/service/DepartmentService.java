@@ -2,6 +2,7 @@ package ru.anokhin.dev.metrologyapp.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,5 +70,11 @@ public class DepartmentService {
             throw new IllegalArgumentException("Департаментов с типом " + type + " не найдено");
         }
         return departmentList;
+    }
+
+    public Page<Department> findAllWithPageable(Integer page, Integer size, String type, String sortBy) {
+        Sort sort = Sort.by(Sort.Direction.valueOf(sortBy), "name", "id");
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return departmentRepository.findAllByType(DepartmentType.valueOf(type), pageable);
     }
 }
