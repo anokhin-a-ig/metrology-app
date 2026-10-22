@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="2026-10-23-1" author="Anokhin.A.Ig">
+        <preConditions onFail="HALT">
+            <sqlCheck expectedResult="0">
+                SELECT count(*)
+                FROM (
+                    SELECT lower(name COLLATE "ru-RU-x-icu")
+                    FROM department
+                    GROUP BY 1
+                    HAVING count(*) &gt; 1
+                ) duplicates
+            </sqlCheck>
+        </preConditions>
+
+        <sql>
+            CREATE UNIQUE INDEX ux_department_name_lower_icu
+            ON department (lower(name COLLATE "ru-RU-x-icu"))
+        </sql>
+
+        <rollback>
+            DROP INDEX ux_department_name_lower_icu
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

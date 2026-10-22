@@ -31,6 +31,14 @@ public class DepartmentService {
         return departmentRepository.existsById(id);
     }
 
+    @Transactional(readOnly = true)
+    public boolean existDepartment(String name) {
+        if (name == null) {
+            return false;
+        }
+        return departmentRepository.existsByNameCaseInsensitive(name.trim());
+    }
+
     public Department save(Department department) {
         return departmentRepository.save(department);
     }
@@ -111,5 +119,10 @@ public class DepartmentService {
         } catch (IllegalArgumentException exception) {
             throw new IllegalArgumentException("Указанный тип департамента " + type + " не поддерживается");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Department> searchByName(String search) {
+        return departmentRepository.searchByNameCaseInsensitive(search == null ? "" : search.trim());
     }
 }

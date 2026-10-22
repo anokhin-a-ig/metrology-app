@@ -23,7 +23,15 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     Optional<Department> findByName(@Param("name") String name);
 
 
-    boolean existsByName(String name);
+    @Query(value = """
+            SELECT EXISTS (
+                SELECT 1
+                FROM department d
+                WHERE lower(d.name COLLATE "ru-RU-x-icu") =
+                      lower(CAST(:name AS text) COLLATE "ru-RU-x-icu")
+            )
+            """, nativeQuery = true)
+    boolean existsByNameCaseInsensitive(@Param("name") String name);
 
     Optional<List<Department>> findDepartmentByType(DepartmentType type);
 
@@ -36,4 +44,15 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     WHERE d.parent.id IN :parentIds
 """)
     List<Long> findParentIdsWithChildren(@Param("parentIds") Collection<Long> parentIds);
+
+    @Query(value = """
+            SELECT d.*
+            FROM department d
+            WHERE strpos(
+                lower(d.name COLLATE "ru-RU-x-icu"),
+                lower(CAST(:search AS text) COLLATE "ru-RU-x-icu")
+            ) > 0
+            ORDER BY d.name COLLATE "ru-RU-x-icu", d.id
+            """, nativeQuery = true)
+    List<Department> searchByNameCaseInsensitive(@Param("search") String search);
 }

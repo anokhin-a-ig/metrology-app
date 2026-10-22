@@ -1,12 +1,13 @@
 package ru.anokhin.dev.metrologyapp.service.dto;
 
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.anokhin.dev.metrologyapp.dto.entity.DepartmentDto;
 import ru.anokhin.dev.metrologyapp.dto.request.DepartmentRequestDto;
 import ru.anokhin.dev.metrologyapp.dto.response.DepartmentResponseDto;
 import ru.anokhin.dev.metrologyapp.entities.Department;
+import ru.anokhin.dev.metrologyapp.exception.DuplicateDepartmentException;
 import ru.anokhin.dev.metrologyapp.mapper.DepartmentMapper;
 import ru.anokhin.dev.metrologyapp.service.DepartmentService;
 
@@ -26,6 +27,9 @@ public class DepartmentDtoService {
     }
 
     public DepartmentResponseDto save(DepartmentRequestDto dto) {
+        if (departmentService.existDepartment(dto.name())) {
+            throw new DuplicateDepartmentException("Департамент с таким названием уже существует");
+        }
         Department parent = null;
         if (dto.parentId() != null) {
             parent = departmentService.findById(dto.parentId());
@@ -53,11 +57,11 @@ public class DepartmentDtoService {
         return page.stream().map(departmentMapper::toDtoWithoutChildren).toList();
     }
 
-    public DepartmentResponseDto changeById(Long id, @Valid DepartmentRequestDto dto) {
+    public DepartmentResponseDto changeById(Long id, DepartmentRequestDto dto) {
         Department department = departmentService.findById(id);
         if (department != null) {
             department.setId(id);
-            department.setName(dto.name());
+            department.setName(dto.name() == null ? null : dto.name().trim());
             department.setType(dto.type());
             department.setParent(dto.parentId() != null ? departmentService.findById(dto.parentId()) : null);
             departmentService.save(department);
@@ -105,5 +109,13 @@ public class DepartmentDtoService {
                 page.stream().map(Department::getId).toList());
         return page.map(department -> departmentMapper.toDtoWithoutChildren(
                 department, parentIdsWithChildren.contains(department.getId())));
+    }
+
+    @Transactional(readOnly = true)
+    public List<DepartmentDto> searchByName(String search) {
+        return departmentService.searchByName(search)
+                .stream()
+                .map(DepartmentDto::new)
+                .toList();
     }
 }

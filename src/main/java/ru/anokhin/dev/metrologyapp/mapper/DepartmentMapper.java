@@ -13,7 +13,7 @@ public class DepartmentMapper {
 
      public Department toEntity (DepartmentRequestDto dto, Department parent) {
          Department dep = new Department();
-         dep.setName(dto.name());
+         dep.setName(dto.name() == null ? null : dto.name().trim());
          dep.setType(dto.type());
          dep.setParent(parent);
          return dep;

@@ -7,4 +7,5 @@
 
     <include file="/db/changelog/1-0-0-SNAPSHOT/01-init-db-table-changelog.xml"/>
     <include file="/db/changelog/1-0-0-SNAPSHOT/02-init-data-in-table.xml"/>
+    <include file="/db/changelog/1-0-0-SNAPSHOT/03-department-name-icu-index.xml"/>
 </databaseChangeLog>

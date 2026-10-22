@@ -2,22 +2,15 @@ package ru.anokhin.dev.metrologyapp.rest;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.anokhin.dev.metrologyapp.dto.entity.DepartmentDto;
 import ru.anokhin.dev.metrologyapp.dto.request.DepartmentRequestDto;
 import ru.anokhin.dev.metrologyapp.dto.response.DepartmentResponseDto;
-import ru.anokhin.dev.metrologyapp.entities.Department;
 import ru.anokhin.dev.metrologyapp.service.DepartmentService;
 import ru.anokhin.dev.metrologyapp.service.dto.DepartmentDtoService;
 
@@ -46,21 +39,7 @@ public class DepartmentController {
     @ApiResponse(responseCode = "201", description = "Департамент успешно создан")
     @ApiResponse(responseCode = "400", description = "Ошибка валидации входных данных")
     @PostMapping
-    public ResponseEntity<DepartmentResponseDto> create(
-            @Valid @RequestBody(
-                    description = "Данные департамента",
-                    content = @Content(
-                            examples = @ExampleObject(
-                                    value = """
-                                    {
-                                      "name": "Цех сборки",
-                                      "type": "WORKSHOP",
-                                      "parentId": 1
-                                    }
-                                    """
-                            )
-                    )
-            ) DepartmentRequestDto dto) {
+    public ResponseEntity<DepartmentResponseDto> create(@RequestBody DepartmentRequestDto dto) {
         DepartmentResponseDto created = departmentDtoService.save(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -110,6 +89,16 @@ public class DepartmentController {
             @RequestParam Integer size,
             @RequestParam String sortBy) {
         return ResponseEntity.ok(departmentDtoService.findByParent(parentId, page, size, sortBy));
+    }
+
+    @Operation(
+            summary = "Поиск департаментов по части названия",
+            description = "Возвращает департаменты, название которых содержит указанный текст без учёта регистра"
+    )
+    @ApiResponse(responseCode = "200", description = "Результаты поиска получены")
+    @GetMapping(path = "/search-by-name", params = {"search"})
+    public ResponseEntity<List<DepartmentDto>> searchByName(@RequestParam String search) {
+        return ResponseEntity.ok(departmentDtoService.searchByName(search));
     }
 
 
@@ -162,20 +151,7 @@ public class DepartmentController {
     public ResponseEntity<DepartmentResponseDto> changeById(
             @Parameter(description = "Идентификатор департамента", required = true, example = "1")
             @PathVariable Long id,
-            @Valid @RequestBody(
-                    description = "Обновленные данные департамента",
-                    content = @Content(
-                            examples = @ExampleObject(
-                                    value = """
-                                    {
-                                      "name": "Цех механической обработки",
-                                      "type": "WORKSHOP",
-                                      "parentId": 1
-                                    }
-                                    """
-                            )
-                    )
-            ) DepartmentRequestDto dto) {
+            @RequestBody DepartmentRequestDto dto) {
         return ResponseEntity.status(HttpStatus.OK).body(departmentDtoService.changeById(id, dto));
     }
 
