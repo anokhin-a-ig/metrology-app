@@ -79,14 +79,14 @@ public class DepartmentDtoService {
 
     public void delete(Long id) {
         Department department = departmentService.findById(id);
-        boolean canArchive = true;
-        if (department != null) {
-            if (!department.isArchive()) {
-                if (!department.getChildren().isEmpty()) {
-                    List<Department> children = department.getChildren();
-                    for (Department d : children) {
-                        if (!d.isArchive()) {
-                            canArchive =  false;
+        boolean canArchive = true; //сразу говорим что можно удалять
+        if (department != null) { // департамент найден
+            if (!department.isArchive()) { // и он не архивный
+                if (!department.getChildren().isEmpty()) { // у него есть дети
+                    List<Department> children = department.getChildren(); // получаем всех детей
+                    for (Department d : children) { // проверяем каждого ребенка
+                        if (!d.isArchive()) { //если хоть 1 не архивный
+                            canArchive =  false; // закрываем возможность архивировать
                             break;
                         }
                     }
@@ -94,15 +94,20 @@ public class DepartmentDtoService {
             } else {
                 throw new ArchiveDepartmentException("Департамент уже удален. Повторное удаление невозможно");
             }
-            if (canArchive) {
-                department.setArchive(true);
-                department.setArchiveAt(LocalDateTime.now());
-                departmentService.save(department);
-            } else {
-                throw new ArchiveDepartmentException("Департамент уже удален. Повторное удаление невозможно");
-            }
+//            if (canArchive) {
+//                department.setArchive(true);
+//                department.setArchiveAt(LocalDateTime.now());
+//                departmentService.save(department);
+//            } else {
+//                throw new ArchiveDepartmentException("Департамент уже удален. Повторное удаление невозможно");
+//            }
         } else {
             throw new IllegalArgumentException("Департамента с id:" + id + "не существует");
+        }
+        if (canArchive) {
+            department.setArchiveAt(LocalDateTime.now());
+            department.setArchive(true);
+            departmentService.save(department);
         }
     }
 

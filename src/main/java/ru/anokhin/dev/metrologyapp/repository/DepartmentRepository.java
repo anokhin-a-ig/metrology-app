@@ -42,6 +42,7 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
     @Query("""
     SELECT DISTINCT d.parent.id FROM Department d
     WHERE d.parent.id IN :parentIds
+      AND d.isArchive = false
 """)
     List<Long> findParentIdsWithChildren(@Param("parentIds") Collection<Long> parentIds);
 
@@ -51,8 +52,17 @@ public interface DepartmentRepository extends JpaRepository<Department, Long> {
             WHERE strpos(
                 lower(d.name COLLATE "ru-RU-x-icu"),
                 lower(CAST(:search AS text) COLLATE "ru-RU-x-icu")
-            ) > 0
+            ) > 0 AND d.archive = false
             ORDER BY d.name COLLATE "ru-RU-x-icu", d.id
             """, nativeQuery = true)
     List<Department> searchByNameCaseInsensitive(@Param("search") String search);
+
+
+    List<Department> findAllByIsArchiveIsFalse();
+
+    Page<Department> findAllByIsArchiveIsFalse(boolean isArchive, Pageable pageable);
+
+    Page<Department> findAllByTypeAndIsArchiveIsFalse(DepartmentType departmentType, Pageable pageable);
+
+    Page<Department> findAllByParent_IdAndIsArchive(Long parentId, boolean isArchive, Pageable pageable);
 }

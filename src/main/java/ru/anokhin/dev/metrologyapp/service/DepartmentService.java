@@ -51,12 +51,12 @@ public class DepartmentService {
 
     @Transactional(readOnly = true)
     public List<Department> findAll() {
-        return departmentRepository.findAll();
+        return departmentRepository.findAllByIsArchiveIsFalse();
     }
 
     @Transactional(readOnly = true)
     public Page<Department> findAllWithPagination(Integer offset, Integer limit) {
-        return departmentRepository.findAll(PageRequest.of(offset, limit));
+        return departmentRepository.findAllByIsArchiveIsFalse(true, (PageRequest.of(offset, limit)));
     }
 
     public void delete(Long id) {
@@ -82,13 +82,13 @@ public class DepartmentService {
     @Transactional(readOnly = true)
     public Page<Department> findAllWithPageable(Integer page, Integer size, String type, String sortBy) {
         Pageable pageable = createPageable(page, size, sortBy);
-        return departmentRepository.findAllByType(parseType(type), pageable);
+        return departmentRepository.findAllByTypeAndIsArchiveIsFalse(parseType(type), pageable);
     }
 
     @Transactional(readOnly = true)
     public Page<Department> findByParent(Long parentId, Integer page, Integer size, String sortBy) {
         Pageable pageable = createPageable(page, size, sortBy);
-        return departmentRepository.findAllByParent_Id(parentId, pageable);
+        return departmentRepository.findAllByParent_IdAndIsArchive(parentId, false, pageable);
     }
 
     @Transactional(readOnly = true)
