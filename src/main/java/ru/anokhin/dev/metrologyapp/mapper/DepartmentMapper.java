@@ -30,7 +30,11 @@ public class DepartmentMapper {
                 dep.getType(),
                 dep.getParent() != null ? new DepartmentDto(dep.getParent()) : null,
                 children,
-                !children.isEmpty()
+                !children.isEmpty(),
+                dep.isArchive(),
+                dep.getCreateAt(),
+                dep.getArchiveAt(),
+                dep.getChangeAt()
         );
     }
 
@@ -46,7 +50,11 @@ public class DepartmentMapper {
                  dep.getType(),
                  dep.getParent() != null ? new DepartmentDto(dep.getParent()) : null,
                  List.of(),
-                 hasChildren
+                 hasChildren,
+                 dep.isArchive(),
+                 dep.getCreateAt(),
+                 dep.getArchiveAt(),
+                 dep.getChangeAt()
          );
     }
 }

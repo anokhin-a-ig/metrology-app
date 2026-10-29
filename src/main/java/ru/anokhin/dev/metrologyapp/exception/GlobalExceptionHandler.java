@@ -34,6 +34,17 @@ public class GlobalExceptionHandler {
                 ));
     }
 
+    @ExceptionHandler(ArchiveDepartmentException.class)
+    public ResponseEntity<Map<String, Object>> handleArchiveDepartment(ArchiveDepartmentException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(Map.of(
+                        "message", ex.getMessage(),
+                        "status", 409,
+                        "timestamp", LocalDateTime.now()
+                ));
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<Map<String, Object>> handleDataIntegrityViolation(DataIntegrityViolationException ex) {
         String cause = ex.getMostSpecificCause().getMessage();

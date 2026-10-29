@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.anokhin.dev.metrologyapp.dto.entity.DepartmentDto;
 import ru.anokhin.dev.metrologyapp.dto.request.DepartmentRequestDto;
 import ru.anokhin.dev.metrologyapp.dto.response.DepartmentResponseDto;
-import ru.anokhin.dev.metrologyapp.service.DepartmentService;
 import ru.anokhin.dev.metrologyapp.service.dto.DepartmentDtoService;
 
 import java.util.List;
@@ -22,11 +21,9 @@ import java.util.List;
 public class DepartmentController {
 
     private final DepartmentDtoService departmentDtoService;
-    private final DepartmentService departmentService;
 
-    public DepartmentController(DepartmentDtoService departmentDtoService, DepartmentService departmentService) {
+    public DepartmentController(DepartmentDtoService departmentDtoService) {
         this.departmentDtoService = departmentDtoService;
-        this.departmentService = departmentService;
     }
 
     @Operation(

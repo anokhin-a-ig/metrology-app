@@ -7,10 +7,12 @@ import ru.anokhin.dev.metrologyapp.dto.entity.DepartmentDto;
 import ru.anokhin.dev.metrologyapp.dto.request.DepartmentRequestDto;
 import ru.anokhin.dev.metrologyapp.dto.response.DepartmentResponseDto;
 import ru.anokhin.dev.metrologyapp.entities.Department;
+import ru.anokhin.dev.metrologyapp.exception.ArchiveDepartmentException;
 import ru.anokhin.dev.metrologyapp.exception.DuplicateDepartmentException;
 import ru.anokhin.dev.metrologyapp.mapper.DepartmentMapper;
 import ru.anokhin.dev.metrologyapp.service.DepartmentService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -60,12 +62,16 @@ public class DepartmentDtoService {
     public DepartmentResponseDto changeById(Long id, DepartmentRequestDto dto) {
         Department department = departmentService.findById(id);
         if (department != null) {
-            department.setId(id);
-            department.setName(dto.name() == null ? null : dto.name().trim());
-            department.setType(dto.type());
-            department.setParent(dto.parentId() != null ? departmentService.findById(dto.parentId()) : null);
-            departmentService.save(department);
-            return departmentMapper.toDto(department);
+            if (!department.isArchive()) {
+                department.setId(id);
+                department.setName(dto.name() == null ? null : dto.name().trim());
+                department.setType(dto.type());
+                department.setParent(dto.parentId() != null ? departmentService.findById(dto.parentId()) : null);
+                departmentService.save(department);
+                return departmentMapper.toDto(department);
+            } else {
+                throw new ArchiveDepartmentException("Департамент удален и не может быть изменен");
+            }
         } else {
             throw new IllegalArgumentException("Департамент с id: " + id + " не найден");
         }
@@ -73,14 +79,35 @@ public class DepartmentDtoService {
 
     public void delete(Long id) {
         Department department = departmentService.findById(id);
-        if (department != null) {
-            if(department.getChildren().isEmpty()) {
-                departmentService.delete(id);
+        boolean canArchive = true; //сразу говорим что можно удалять
+        if (department != null) { // департамент найден
+            if (!department.isArchive()) { // и он не архивный
+                if (!department.getChildren().isEmpty()) { // у него есть дети
+                    List<Department> children = department.getChildren(); // получаем всех детей
+                    for (Department d : children) { // проверяем каждого ребенка
+                        if (!d.isArchive()) { //если хоть 1 не архивный
+                            canArchive =  false; // закрываем возможность архивировать
+                            break;
+                        }
+                    }
+                }
             } else {
-                throw new IllegalArgumentException("Удалите или переназначьте сначала зависимые департаменты");
+                throw new ArchiveDepartmentException("Департамент уже удален. Повторное удаление невозможно");
             }
+//            if (canArchive) {
+//                department.setArchive(true);
+//                department.setArchiveAt(LocalDateTime.now());
+//                departmentService.save(department);
+//            } else {
+//                throw new ArchiveDepartmentException("Департамент уже удален. Повторное удаление невозможно");
+//            }
         } else {
             throw new IllegalArgumentException("Департамента с id:" + id + "не существует");
+        }
+        if (canArchive) {
+            department.setArchiveAt(LocalDateTime.now());
+            department.setArchive(true);
+            departmentService.save(department);
         }
     }
 
