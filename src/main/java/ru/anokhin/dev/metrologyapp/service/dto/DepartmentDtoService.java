@@ -92,12 +92,24 @@ public class DepartmentDtoService {
         return departmentMapper.toDto(department);
     }
 
+    /**
+     * Проверяет если тип департамента не FACTORY и у него нет ID какого либо родительского - бросает исключение
+     * @param dto - DTO который проверяем
+     */
     private void requireParentForNonFactory(DepartmentRequestDto dto) {
         if (dto.type() != DepartmentType.FACTORY && dto.parentId() == null) {
             throw new IllegalArgumentException("Родительский департамент обязателен");
         }
     }
 
+    /**
+     * Проверяет родителя.
+     * @param parentId - ID департамента
+     * @return
+     * 1. NULL - если входной parentID = null<br>
+     * 2. Department если он найден в БД<br>
+     * 3. DepartmentNotFoundException - если департамента с указанным ID не найдено
+     */
     private Department resolveParent(Long parentId) {
         if (parentId == null) {
             return null;
