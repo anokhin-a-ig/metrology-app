@@ -193,12 +193,29 @@ class DepartmentControllerTests {
     }
 
     @Test
-    @DisplayName("Очистка родителя возвращает 200 и parent = null")
-    void changeById_nullParentReturns200() throws Exception {
+    @DisplayName("Не-FACTORY без родителя возвращает 400 с точным сообщением")
+    void changeById_nonFactoryWithoutParentReturns400() throws Exception {
+        when(departmentDtoService.changeById(eq(1L), any()))
+                .thenThrow(new IllegalArgumentException("Родительский департамент обязателен"));
+
+        mockMvc.perform(put("/api/v1/departments/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {"name": "Цех", "type": "WORKSHOP", "parentId": null}
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Родительский департамент обязателен"))
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.timestamp").exists());
+    }
+
+    @Test
+    @DisplayName("FACTORY без родителя возвращает 200 и parent = null")
+    void changeById_factoryNullParentReturns200() throws Exception {
         DepartmentResponseDto response = new DepartmentResponseDto(
                 1L,
-                "Цех",
-                DepartmentType.WORKSHOP,
+                "Завод",
+                DepartmentType.FACTORY,
                 null,
                 List.of(),
                 false,
@@ -211,7 +228,7 @@ class DepartmentControllerTests {
         mockMvc.perform(put("/api/v1/departments/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"name": "Цех", "type": "WORKSHOP", "parentId": null}
+                                {"name": "Завод", "type": "FACTORY", "parentId": null}
                                 """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.parent").value(org.hamcrest.Matchers.nullValue()));

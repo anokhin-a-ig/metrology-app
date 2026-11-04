@@ -7,6 +7,7 @@ import ru.anokhin.dev.metrologyapp.dto.entity.DepartmentDto;
 import ru.anokhin.dev.metrologyapp.dto.request.DepartmentRequestDto;
 import ru.anokhin.dev.metrologyapp.dto.response.DepartmentResponseDto;
 import ru.anokhin.dev.metrologyapp.entities.Department;
+import ru.anokhin.dev.metrologyapp.entities.enums.DepartmentType;
 import ru.anokhin.dev.metrologyapp.exception.ArchiveDepartmentException;
 import ru.anokhin.dev.metrologyapp.exception.DepartmentCycleException;
 import ru.anokhin.dev.metrologyapp.exception.DepartmentNotFoundException;
@@ -32,6 +33,7 @@ public class DepartmentDtoService {
     }
 
     public DepartmentResponseDto save(DepartmentRequestDto dto) {
+        requireParentForNonFactory(dto);
         if (departmentService.existDepartment(dto.name())) {
             throw new DuplicateDepartmentException("Департамент с таким названием уже существует");
         }
@@ -65,6 +67,8 @@ public class DepartmentDtoService {
             throw new ArchiveDepartmentException("Департамент удалён и не может быть изменён");
         }
 
+        requireParentForNonFactory(dto);
+
         if (id.equals(dto.parentId())) {
             throw new IllegalArgumentException("Департамент не может быть родителем самого себя");
         }
@@ -86,6 +90,12 @@ public class DepartmentDtoService {
         department.setParent(parent);
         departmentService.saveAndFlush(department);
         return departmentMapper.toDto(department);
+    }
+
+    private void requireParentForNonFactory(DepartmentRequestDto dto) {
+        if (dto.type() != DepartmentType.FACTORY && dto.parentId() == null) {
+            throw new IllegalArgumentException("Родительский департамент обязателен");
+        }
     }
 
     private Department resolveParent(Long parentId) {
