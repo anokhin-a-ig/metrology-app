@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.anokhin.dev.metrologyapp.entities.Department;
 import ru.anokhin.dev.metrologyapp.entities.enums.DepartmentType;
+import ru.anokhin.dev.metrologyapp.exception.DepartmentNotFoundException;
 import ru.anokhin.dev.metrologyapp.repository.DepartmentRepository;
 
 import java.util.Collection;
@@ -43,10 +44,14 @@ public class DepartmentService {
         return departmentRepository.save(department);
     }
 
+    public Department saveAndFlush(Department department) {
+        return departmentRepository.saveAndFlush(department);
+    }
+
     @Transactional(readOnly = true)
     public Department findById(Long id) {
         return departmentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Департамент с id: " + id + " не найден"));
+                .orElseThrow(() -> new DepartmentNotFoundException("Департамент с id: " + id + " не найден"));
     }
 
     @Transactional(readOnly = true)

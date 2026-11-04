@@ -8,11 +8,14 @@ import ru.anokhin.dev.metrologyapp.dto.request.DepartmentRequestDto;
 import ru.anokhin.dev.metrologyapp.dto.response.DepartmentResponseDto;
 import ru.anokhin.dev.metrologyapp.entities.Department;
 import ru.anokhin.dev.metrologyapp.exception.ArchiveDepartmentException;
+import ru.anokhin.dev.metrologyapp.exception.DepartmentCycleException;
+import ru.anokhin.dev.metrologyapp.exception.DepartmentNotFoundException;
 import ru.anokhin.dev.metrologyapp.exception.DuplicateDepartmentException;
 import ru.anokhin.dev.metrologyapp.mapper.DepartmentMapper;
 import ru.anokhin.dev.metrologyapp.service.DepartmentService;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -32,10 +35,7 @@ public class DepartmentDtoService {
         if (departmentService.existDepartment(dto.name())) {
             throw new DuplicateDepartmentException("Департамент с таким названием уже существует");
         }
-        Department parent = null;
-        if (dto.parentId() != null) {
-            parent = departmentService.findById(dto.parentId());
-        }
+        Department parent = resolveParent(dto.parentId());
 
         Department department = departmentMapper.toEntity(dto, parent);
         return departmentMapper.toDto(departmentService.save(department));
@@ -61,20 +61,54 @@ public class DepartmentDtoService {
 
     public DepartmentResponseDto changeById(Long id, DepartmentRequestDto dto) {
         Department department = departmentService.findById(id);
-        if (department != null) {
-            if (!department.isArchive()) {
-                department.setId(id);
-                department.setName(dto.name() == null ? null : dto.name().trim());
-                department.setType(dto.type());
-                department.setParent(dto.parentId() != null ? departmentService.findById(dto.parentId()) : null);
-                departmentService.save(department);
-                return departmentMapper.toDto(department);
-            } else {
-                throw new ArchiveDepartmentException("Департамент удален и не может быть изменен");
-            }
-        } else {
-            throw new IllegalArgumentException("Департамент с id: " + id + " не найден");
+        if (department.isArchive()) {
+            throw new ArchiveDepartmentException("Департамент удалён и не может быть изменён");
         }
+
+        if (id.equals(dto.parentId())) {
+            throw new IllegalArgumentException("Департамент не может быть родителем самого себя");
+        }
+
+        Department parent = resolveParent(dto.parentId());
+        if (parent != null) {
+            if (parent.isArchive()) {
+                throw new ArchiveDepartmentException("Родительский департамент удалён");
+            }
+            if (isDescendantOf(parent, id)) {
+                throw new DepartmentCycleException(
+                        "Нельзя переместить департамент внутрь его дочернего подразделения");
+            }
+        }
+
+        department.setId(id);
+        department.setName(dto.name() == null ? null : dto.name().trim());
+        department.setType(dto.type());
+        department.setParent(parent);
+        departmentService.saveAndFlush(department);
+        return departmentMapper.toDto(department);
+    }
+
+    private Department resolveParent(Long parentId) {
+        if (parentId == null) {
+            return null;
+        }
+        try {
+            return departmentService.findById(parentId);
+        } catch (DepartmentNotFoundException ex) {
+            throw new DepartmentNotFoundException("Родительский департамент с id: " + parentId + " не найден");
+        }
+    }
+
+    private boolean isDescendantOf(Department candidateParent, Long departmentId) {
+        Set<Long> visited = new HashSet<>();
+        Department current = candidateParent;
+        while (current != null && visited.add(current.getId())) {
+            if (departmentId.equals(current.getId())) {
+                return true;
+            }
+            current = current.getParent();
+        }
+        return false;
     }
 
     public void delete(Long id) {

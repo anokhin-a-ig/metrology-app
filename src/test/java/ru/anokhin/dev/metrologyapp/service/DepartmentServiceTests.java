@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.anokhin.dev.metrologyapp.entities.Department;
 import ru.anokhin.dev.metrologyapp.entities.enums.DepartmentType;
+import ru.anokhin.dev.metrologyapp.exception.DepartmentNotFoundException;
 import ru.anokhin.dev.metrologyapp.repository.DepartmentRepository;
 
 import java.util.List;
@@ -56,7 +57,9 @@ public class DepartmentServiceTests {
     void findById_negativeResult() {
         when(repository.findById(2L)).thenReturn(Optional.empty());
 
-        assertThrows(IllegalArgumentException.class, () -> service.findById(2L));
+        DepartmentNotFoundException exception = assertThrows(
+                DepartmentNotFoundException.class, () -> service.findById(2L));
+        assertEquals("Департамент с id: 2 не найден", exception.getMessage());
         verify(repository).findById(2L);
     }
 

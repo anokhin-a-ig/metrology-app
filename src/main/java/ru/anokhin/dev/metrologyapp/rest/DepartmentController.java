@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ public class DepartmentController {
     @ApiResponse(responseCode = "201", description = "Департамент успешно создан")
     @ApiResponse(responseCode = "400", description = "Ошибка валидации входных данных")
     @PostMapping
-    public ResponseEntity<DepartmentResponseDto> create(@RequestBody DepartmentRequestDto dto) {
+    public ResponseEntity<DepartmentResponseDto> create(@Valid @RequestBody DepartmentRequestDto dto) {
         DepartmentResponseDto created = departmentDtoService.save(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
@@ -148,7 +149,7 @@ public class DepartmentController {
     public ResponseEntity<DepartmentResponseDto> changeById(
             @Parameter(description = "Идентификатор департамента", required = true, example = "1")
             @PathVariable Long id,
-            @RequestBody DepartmentRequestDto dto) {
+            @Valid @RequestBody DepartmentRequestDto dto) {
         return ResponseEntity.status(HttpStatus.OK).body(departmentDtoService.changeById(id, dto));
     }
 
