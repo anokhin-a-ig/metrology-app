@@ -20,7 +20,6 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //уникальный идентификатор
 
-
     @Column(name = "full_name")
     private String fullName;    // ФИО
 
