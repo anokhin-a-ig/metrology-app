@@ -17,6 +17,10 @@
                 <constraints nullable="false"/>
             </column>
             <column name="parent_id" type="BIGINT"/>
+            <column name="create_at" type="DATETIME"/>
+            <column name="archive" type="BOOLEAN" defaultValue="false"/>
+            <column name="archive_at" type="DATETIME"/>
+            <column name="change_at" type="DATETIME"/>
         </createTable>
     </changeSet>
     <changeSet id="1788899902736-2" author="Anokhin.A.Ig">
@@ -24,9 +28,14 @@
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="pk_employee"/>
             </column>
-            <column name="full_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="middle_name" type="VARCHAR(255)"/>
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="username" type="VARCHAR(255)"/>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="role" type="VARCHAR(255)"/>
             <column name="email" type="VARCHAR(255)"/>
-            <column name="employee_id" type="VARCHAR(255)"/>
+            <column name="factory_number" type="VARCHAR(255)"/>
             <column name="date_of_employment" type="DATE"/>
             <column name="dismissal_date" type="DATE"/>
             <column name="department_id" type="BIGINT"/>
@@ -76,12 +85,6 @@
     </changeSet>
     <changeSet id="1788899902736-5" author="Anokhin.A.Ig">
         <addUniqueConstraint columnNames="name" constraintName="uc_department_name" tableName="department"/>
-    </changeSet>
-    <changeSet id="1788899902736-6" author="Anokhin.A.Ig">
-        <addUniqueConstraint columnNames="email" constraintName="uc_employee_email" tableName="employee"/>
-    </changeSet>
-    <changeSet id="1788899902736-7" author="Anokhin.A.Ig">
-        <addUniqueConstraint columnNames="employee_id" constraintName="uc_employee_employee" tableName="employee"/>
     </changeSet>
     <changeSet id="1788899902736-8" author="Anokhin.A.Ig">
         <addForeignKeyConstraint baseColumnNames="parent_id" baseTableName="department"

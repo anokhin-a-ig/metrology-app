@@ -7,20 +7,21 @@ import org.springframework.web.bind.annotation.*;
 import ru.anokhin.dev.metrologyapp.dto.request.EmployeeRequestDto;
 import ru.anokhin.dev.metrologyapp.dto.response.EmployeeResponseDto;
 import ru.anokhin.dev.metrologyapp.service.EmployeeService;
+import ru.anokhin.dev.metrologyapp.service.dto.EmployeeDtoService;
 
 @RestController
 @RequestMapping("/api/v1/employees")
 public class EmployeeController {
 
-    private final EmployeeService employeeService;
+    private final EmployeeDtoService employeeDtoService;
 
-    EmployeeController(EmployeeService service) {
-        this.employeeService = service;
+    EmployeeController(EmployeeDtoService service) {
+        this.employeeDtoService = service;
     }
 
-    @PostMapping
-    public ResponseEntity<EmployeeResponseDto> add(@Valid @RequestBody EmployeeRequestDto dto) {
-        EmployeeResponseDto saved = employeeService.save(dto);
+    @PostMapping("/add")
+    public ResponseEntity<EmployeeResponseDto> save(@RequestBody EmployeeRequestDto dto) {
+        EmployeeResponseDto saved = employeeDtoService.save(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 }

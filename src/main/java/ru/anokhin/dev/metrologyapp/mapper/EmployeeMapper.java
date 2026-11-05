@@ -12,9 +12,11 @@ public class EmployeeMapper {
 
     public Employee toEntity(EmployeeRequestDto dto, Department department) {
         Employee emp = new Employee();
-        emp.setFullName(dto.fullName());
+        emp.setFirstName(dto.firstName());
+        emp.setLastName(dto.lastName());
+        emp.setMiddleName(dto.middleName());
         emp.setEmail(dto.email());
-        emp.setEmployeeId(dto.employeeId());
+        emp.setFactoryNumber(dto.factoryNumber());
         emp.setDismissalDate(dto.dismissalDate());
         emp.setDepartment(department);
         emp.setPosition(dto.position());
@@ -31,9 +33,11 @@ public class EmployeeMapper {
     public EmployeeResponseDto toDto(Employee e) {
         return new EmployeeResponseDto(
                 e.getId(),
-                e.getFullName(),
+                e.getLastName(),
+                e.getFirstName(),
+                e.getMiddleName(),
                 e.getEmail(),
-                e.getEmployeeId(),
+                e.getFactoryNumber(),
                 e.getDateOfEmployment(),
                 e.getDismissalDate(),
                 new DepartmentDto(e.getDepartment()),

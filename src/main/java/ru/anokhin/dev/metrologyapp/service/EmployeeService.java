@@ -16,29 +16,20 @@ import java.util.Optional;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    private final DepartmentService departmentService;
-    private final EmployeeMapper employeeMapper;
 
-    EmployeeService(EmployeeRepository repo, DepartmentService departmentService, EmployeeMapper employeeMapper) {
+    EmployeeService(EmployeeRepository repo) {
         this.employeeRepository = repo;
-        this.departmentService = departmentService;
-        this.employeeMapper = employeeMapper;
     }
 
-    public EmployeeResponseDto save(EmployeeRequestDto dto) {
-        employeeRepository.findEmployeeByEmail(dto.email())
-                .ifPresent(employee -> {
-                    throw new IllegalArgumentException("Сотрудник с таким email уже существует");
-                });
+    public Employee save(Employee employee) {
+       return employeeRepository.save(employee);
+    }
 
-        employeeRepository.findEmployeeByEmployeeId(dto.employeeId())
-                .ifPresent(employee -> {
-                    throw new IllegalArgumentException("Сотрудник с таким табельным номером уже существует");
-                });
+    public boolean existByEmail(String email) {
+        return employeeRepository.existsByEmail(email);
+    }
 
-        Department department = departmentService.findById(dto.departmentId());
-
-        Employee employee = employeeMapper.toEntity(dto, department);
-        return employeeMapper.toDto(employeeRepository.save(employee));
+    public boolean existByFactoryNumber(String s) {
+        return employeeRepository.existsByFactoryNumber(s);
     }
 }

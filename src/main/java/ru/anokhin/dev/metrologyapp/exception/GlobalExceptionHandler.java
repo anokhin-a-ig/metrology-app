@@ -9,6 +9,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.anokhin.dev.metrologyapp.exception.employee.EmployeeEmailAlreadyExistException;
+import ru.anokhin.dev.metrologyapp.exception.employee.EmployeeFactoryNumberAlreadyExistException;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -87,5 +89,16 @@ public class GlobalExceptionHandler {
                         "status", statusCode,
                         "timestamp", LocalDateTime.now()
                 ));
+    }
+
+
+    @ExceptionHandler(EmployeeEmailAlreadyExistException.class)
+    public ResponseEntity<Map<String, Object>> handleEmployeeEmailAlreadyExist (EmployeeEmailAlreadyExistException ex) {
+        return buildResponse(HttpStatus.CONFLICT, 409, ex.getMessage());
+    }
+
+    @ExceptionHandler(EmployeeFactoryNumberAlreadyExistException.class)
+    public ResponseEntity<Map<String, Object>> handleEmployeeFactoryNumberAlreadyExist(EmployeeFactoryNumberAlreadyExistException ex) {
+        return buildResponse(HttpStatus.CONFLICT, 409, ex.getMessage());
     }
 }
