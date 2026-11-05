@@ -11,9 +11,11 @@ import java.util.List;
 public record EmployeeResponseDto(
 
         Long id, //уникальный идентификатор
-        String fullName,    // ФИО
+        String lastName,    //
+        String firstName,    // ФИО
+        String middleName,    // ФИО
         String email,    // электронная почта
-        String employeeId,    // табельный номер
+        String factoryNumber,    // табельный номер
         LocalDate dateOfEmployment,// дата приёма на работу
         LocalDate dismissalDate,    // дата увольнения
         DepartmentDto department,    // цех/отдел

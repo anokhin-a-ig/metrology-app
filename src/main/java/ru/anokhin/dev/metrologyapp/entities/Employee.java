@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import ru.anokhin.dev.metrologyapp.entities.enums.EmployeeRole;
 import ru.anokhin.dev.metrologyapp.entities.enums.EmployeeStatus;
 
 import java.time.LocalDate;
@@ -20,18 +21,32 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; //уникальный идентификатор
 
+    @Column(name = "last_name")
+    private String lastName;    // Фaмилия
 
-    @Column(name = "full_name")
-    private String fullName;    // ФИО
+    @Column(name = "middle_name")
+    private String middleName; //Отчество
 
-    @Column(unique = true)
+    @Column(name = "first_name")
+    private String firstName; // Имя
+
+    @Column(name = "username")
+    private String username; // логин
+
+    @Column(name = "password")
+    private String password; // пароль
+
+    @Column(name = "role")
+    private EmployeeRole role; // роль
+
+    @Column(name = "email")
     private String email;    // электронная почта
 
-    @Column(name = "employee_id", unique = true)
-    private String employeeId;    // табельный номер
+    @Column(name = "factory_number")
+    private String factoryNumber;    // табельный номер
 
     @Column(name = "date_of_employment", updatable = false)
-    private LocalDate dateOfEmployment = LocalDate.now();    // дата приёма на работу
+    private LocalDate dateOfEmployment;// дата приёма на работу
 
     @Column(name = "dismissal_date")
     private LocalDate dismissalDate;    // дата увольнения
@@ -39,7 +54,6 @@ public class Employee {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     private Department department;    // цех/отдел
-
 
     private String position;   // должность
 
